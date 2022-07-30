@@ -40,7 +40,7 @@ export const AuthProvider = ({ children }) => {
 
   const loginUser = async (e) => {
     e.preventDefault();
-
+    console.log("stage 1");
     let formdata = new FormData();
     let email = e.target.email.value.trim();
     let password = e.target.password.value.trim();
@@ -53,25 +53,23 @@ export const AuthProvider = ({ children }) => {
       redirect: "follow",
     };
 
-    try {
-      const response = await fetch(
-        "http://127.0.0.1:8000/api/token/",
-        requestOptions
-      );
+    console.log("stage 2");
 
-      if (response.status === 200) {
-        const data = await response.json();
-        setAuthTokens({ ...data });
-        localStorage.setItem("authTokens", JSON.stringify(data));
-        let access = customJwtDecode(data.access);
-        setUser({ ...access });
-        // console.log("=======================================")
-        navigate("/", { replace: true });
-      }
-      // else {
-      // }
-    } catch (error) {
-      console.log(error);
+    const response = await fetch(
+      "http://127.0.0.1:8000/api/token/",
+      requestOptions
+    );
+
+    if (response.status === 200) {
+      const data = await response.json();
+      setAuthTokens({ ...data });
+      localStorage.setItem("authTokens", JSON.stringify(data));
+      let access = customJwtDecode(data.access);
+      setUser({ ...access });
+      navigate("/", { replace: true });
+      console.log("stage 3");
+    } else {
+      console.log(response);
     }
   };
 
@@ -103,9 +101,7 @@ export const AuthProvider = ({ children }) => {
   }, [authTokens]);
 
   return (
-    <AuthContext.Provider value={contextData}>
-      {children}
-    </AuthContext.Provider>
+    <AuthContext.Provider value={contextData}>{children}</AuthContext.Provider>
   );
 };
 
