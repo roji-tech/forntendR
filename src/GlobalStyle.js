@@ -3,6 +3,7 @@ import { createGlobalStyle } from "styled-components";
 const GlobalStyle = createGlobalStyle`
 
   :root {
+  --bg-white:	 aliceblue;
   --bg-light:	 #99ff99;
   --bg-image: url(./imgs/subtle-prism.svg);
   --bg-dark: 	#001630;
@@ -22,20 +23,21 @@ const GlobalStyle = createGlobalStyle`
   box-sizing: border-box;
   }
 
+  html {
+    width: 100%;
+  }
+
   body {
-    // width: 100vw;
-    margin: 0;
-    padding: 0;
-    background-color: var(--bg-dark);
+    border : 10px solid blue;
+    width: 100%;
+    margin: 0 auto;
+    padding: 2% 1% 10%;
+    background-color: var(--bg-white);
     color: var(--bg-light);
-    overflow-x : hidden;
-    padding: 0 auto;
-    text-align: center;
-    display:flex;
-    align-items: center;
-    align-content: center;
+    display: flex;
     justify-content: center;
-    flex-direction: column;
+
+
 
     .head{
       font-size: 2rem;
@@ -47,13 +49,20 @@ const GlobalStyle = createGlobalStyle`
       font-size: 2rem;
     }
 
-    h3 {
-      font-size: 1.1rem;
+    .h3 {
+      font-size: 1.5rem;
+      font-family: cursive, "Poppins";
+      color: blue;
+      font-style: italic;
     }
 
     p {
       font-size: 1rem;
     }
+
+    .App {
+    text-align: center;
+      }
 
   }
 `;

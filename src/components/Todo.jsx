@@ -1,18 +1,16 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import TodoForm from "./TodoForm";
 import TodoList from "./TodoList";
 import styled from "styled-components";
+// import axiosInstance from "./addons/axiosInstance";
+import useAxios from "./addons/useAxios";
+
 
 const TodoStyle = styled.div`
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 55%;
+  width: 1000px;
   display: flex;
   flex-direction: column;
   gap: 1em;
-  align-content: center;
   padding: 10px;
   padding-bottom: 0;
   justify-content: center;
@@ -24,7 +22,9 @@ const TodoStyle = styled.div`
   }
 
   .items {
-    gap: 1e m;
+    display: flex;
+    flex-direction: column;
+    gap: 2em;
   }
 
   footer {
@@ -33,24 +33,51 @@ const TodoStyle = styled.div`
     margin: 10px -11px -11px -11px;
   }
 
-  @media screen and (max-width: 1024px) {
-    width: 75%;
+  @media screen and (max-width: 1200px) {
+    width: 800px;
   }
-  @media screen and (max-width: 800px) {
-    width: 90%;
+
+  @media screen and (max-width: 900px) {
+    width: 600px;
   }
-  @media screen and (max-width: 500px) {
-    width: 98%;
+
+  @media screen and (max-width: 600px) {
+    width: 100%;
   }
 `;
 
-const Todo = () => {
+const Todo = ({ selected }) => {
+  const axiosInstance=  useAxios()
+
+  const [todos, setTodos] = useState([]);
+
+  const fetchTodo = async () => {
+    // const response =
+    await axiosInstance.get("api/todos/").then((response) => {
+      if (response.status === 200) {
+        const data = response.data;
+        setTodos(() => response.data);
+        // console.log(response.status + "====================== 444");
+        // console.log(
+        //   JSON.stringify(response.config.headers.Authorization) + " ================555"
+        // );
+      }
+    }).catch((error) => {
+      console.log("error")
+      // console.log(error.message)
+    })
+  };
+
+  useEffect(() => {
+    fetchTodo();
+  }, []);
+
   return (
     <TodoStyle>
       <h1>React_Django Todo List App</h1>
       <div className="items">
         <TodoForm />
-        <TodoList />
+        <TodoList selected={selected} />
       </div>
       <footer>
         <p>Copyright © 2022 RojiTech ToDo App</p>

@@ -17,6 +17,12 @@ const TodoFormStyle = styled.form`
     gap: 1em;
     width: 100%;
 
+    @media screen and (max-width: 500px) {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
     .inputs {
       display: flex;
       flex-direction: column;
@@ -41,9 +47,22 @@ const TodoFormStyle = styled.form`
       justify-content: space-evenly;
       padding-right: 10px;
 
+      @media screen and (max-width: 500px) {
+        flex-direction: row;
+        width: 100%;
+        justify-content: space-evenly;
+        padding: 15px;
+        gap: 0.5em;
+      }
+
       button {
         padding: 6px;
         border-radius: 10px;
+
+        @media screen and (max-width: 500px) {
+          width: 50%;
+          padding: 8px;
+        }
       }
     }
   }
