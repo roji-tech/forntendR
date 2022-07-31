@@ -2,8 +2,6 @@ import React, { useState, useEffect } from "react";
 import TodoForm from "./TodoForm";
 import TodoList from "./TodoList";
 import styled from "styled-components";
-// import axiosInstance from "./addons/axiosInstance";
-import useAxios from "./addons/useAxios";
 
 
 const TodoStyle = styled.div`
@@ -47,30 +45,7 @@ const TodoStyle = styled.div`
 `;
 
 const Todo = ({ selected }) => {
-  const axiosInstance=  useAxios()
 
-  const [todos, setTodos] = useState([]);
-
-  const fetchTodo = async () => {
-    // const response =
-    await axiosInstance.get("api/todos/").then((response) => {
-      if (response.status === 200) {
-        const data = response.data;
-        setTodos(() => response.data);
-        // console.log(response.status + "====================== 444");
-        // console.log(
-        //   JSON.stringify(response.config.headers.Authorization) + " ================555"
-        // );
-      }
-    }).catch((error) => {
-      console.log("error")
-      // console.log(error.message)
-    })
-  };
-
-  useEffect(() => {
-    fetchTodo();
-  }, []);
 
   return (
     <TodoStyle>

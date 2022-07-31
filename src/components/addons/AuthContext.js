@@ -19,7 +19,7 @@ const INITIAL_STATE = {
 const AuthContext = createContext({});
 
 export const AuthProvider = ({ children }) => {
-  const [todos, setTodos] = useState();
+  const [todos, setTodos] = useState([]);
   const axiosInstance = useAxios();
 
   const [authTokens, setAuthTokens] = useState(() =>
@@ -34,13 +34,12 @@ export const AuthProvider = ({ children }) => {
       : null
   );
 
-  const [loading, setLoading] = useState(true);
+  // const [loading, setLoading] = useState(true);
 
   const navigate = useNavigate();
 
   const loginUser = async (e) => {
     e.preventDefault();
-    console.log("stage 1");
     let formdata = new FormData();
     let email = e.target.email.value.trim();
     let password = e.target.password.value.trim();
@@ -53,7 +52,6 @@ export const AuthProvider = ({ children }) => {
       redirect: "follow",
     };
 
-    console.log("stage 2");
 
     const response = await fetch(
       "http://127.0.0.1:8000/api/token/",
@@ -67,7 +65,6 @@ export const AuthProvider = ({ children }) => {
       let access = customJwtDecode(data.access);
       setUser({ ...access });
       navigate("/", { replace: true });
-      console.log("stage 3");
     } else {
       console.log(response);
     }

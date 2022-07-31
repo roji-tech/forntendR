@@ -1,6 +1,89 @@
-import React from "react";
+import { useEffect, useCallback } from "react";
 import styled from "styled-components";
-import  AuthFunc  from "./addons/AuthContext";
+import AuthFunc from "./addons/AuthContext";
+import useAxios from "./addons/useAxios";
+
+const TodoList = ({ selected }) => {
+  const { todos, setTodos } = AuthFunc();
+  const axiosInstance = useAxios();
+
+  const [choice, setChoice] = selected;
+
+  const fetchTodo = async () => {
+    try {
+      const response = await axiosInstance.get("api/todos/");
+
+      const data = await response.data;
+      console.log(data);
+      return setTodos(data);
+    } catch (error) {
+      console.log({ error: error });
+      return "error";
+    }
+  };
+
+  const handleDelete = (e) => {
+    console.log("deleted");
+  };
+
+  const handleCompleted = (e) => {
+    console.log("Completed");
+  };
+
+  useEffect(() => {
+    fetchTodo();
+  }, []);
+
+  const dropDownFilter = (e) => {
+    setChoice(e.target.value);
+  };
+
+  return (
+    <TodoListStyle>
+      <div className="topBar">
+        <div>
+          <button>Delete Completed</button>
+          <button>Delete All </button>
+        </div>
+        <select
+          value={choice}
+          name="filter"
+          onChange={dropDownFilter}
+          id="filter"
+        >
+          <option value="All">All</option>
+          <option value="Completed">Completed</option>
+          <option value="Incomplete">Incomplete</option>
+        </select>
+      </div>
+      <div className="todoCount">
+        <p>YOUR TODOS</p>
+        <p className="p1"> 7 </p>
+      </div>
+      <ul>
+        {todos.map((item, index) => (
+          <li key={item.id}>
+            <div className="todo">
+              <div className="todo-title">
+                <p className="p1">
+                  <b> {index + 1}: </b> coding
+                </p>
+                {/* <p>{item}</p> */}
+              </div>
+            </div>
+
+            <div className="iconDiv">
+              <div>icon</div>
+              <div>icon</div>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </TodoListStyle>
+  );
+};
+
+export default TodoList;
 
 const TodoListStyle = styled.div`
   display: flex;
@@ -128,8 +211,6 @@ const TodoListStyle = styled.div`
           background-color: rgb(0, 255, 255);
         }
 
-       
-
         .desc {
           text-align: justify;
           border-left: 1px solid blue;
@@ -154,123 +235,3 @@ const TodoListStyle = styled.div`
   //     width: 98%;
   //   }
 `;
-
-const TodoList = ({ selected }) => {
-  const [choice, setChoice] = selected
-  const { todos, setTodos } = AuthFunc();
-
-
-  
-  const dropDownFilter = (e) => {
-    setChoice(e.target.value)
-  };
-
-  return (
-    <TodoListStyle>
-      <div className="topBar">
-        <div>
-          <button>Delete Completed</button>
-          <button>Delete All </button>
-        </div>
-        <select
-          value={choice}
-          name="filter"
-          onChange={dropDownFilter}
-          id="filter"
-        >
-          <option value="All">All</option>
-          <option value="Completed">Completed</option>
-          <option value="Incomplete">Incomplete</option>
-        </select>
-      </div>
-      <div className="todoCount">
-        <p>YOUR TODOS</p>
-        <p className="p1"> 7 </p>
-      </div>
-      <ul>
-        <li>
-          <div className="todo">
-            <div className="todo-title">
-              <p className="p1">
-                <b> 1: </b> coding
-              </p>
-              <p>Date 10th may</p>
-            </div>
-            <p className="desc">Lorem ipsum dolor sit amet consectetur</p>
-          </div>
-
-          <div className="iconDiv">
-            <div>icon</div>
-            <div>icon</div>
-          </div>
-        </li>
-        <li>
-          <div className="todo">
-            <div className="todo-title">
-              <p className="p1">
-                <b> 1: </b> coding
-              </p>
-              <p>Date 10th may</p>
-            </div>
-            <p className="desc">Lorem ipsum dolor sit amet consectetur</p>
-          </div>
-
-          <div className="iconDiv">
-            <div>icon</div>
-            <div>icon</div>
-          </div>
-        </li>{" "}
-        <li>
-          <div className="todo">
-            <div className="todo-title">
-              <p className="p1">
-                <b> 1: </b> coding
-              </p>
-              <p>Date 10th may</p>
-            </div>
-            <p className="desc">Lorem ipsum dolor sit amet consectetur</p>
-          </div>
-
-          <div className="iconDiv">
-            <div>icon</div>
-            <div>icon</div>
-          </div>
-        </li>{" "}
-        <li>
-          <div className="todo">
-            <div className="todo-title">
-              <p className="p1">
-                <b> 1: </b> coding
-              </p>
-              <p>Date 10th may</p>
-            </div>
-            <p className="desc">Lorem ipsum dolor sit amet consectetur</p>
-          </div>
-
-          <div className="iconDiv">
-            <div>icon</div>
-            <div>icon</div>
-          </div>
-        </li>{" "}
-        <li>
-          <div className="todo">
-            <div className="todo-title">
-              <p className="p1">
-                <b> 1: </b> coding
-              </p>
-              <p>Date 10th may</p>
-            </div>
-            <p className="desc">Lorem ipsum dolor sit amet consectetur</p>
-          </div>
-
-          <div className="iconDiv">
-            <div>icon</div>
-            <div>icon</div>
-          </div>
-        </li>
-      </ul>
-    </TodoListStyle>
-  );
-};
-
-export default TodoList;
