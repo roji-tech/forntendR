@@ -6,6 +6,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import RequireAuth2 from "./components/addons/RequireAuth2";
 // import useAxios from "./components/addons/useAxios";
 import { AuthProvider } from "./components/addons/AuthContext";
+import Logout from "./components/Logout";
 
 const App = () => {
   const selected = useState("All");
@@ -13,13 +14,14 @@ const App = () => {
   return (
     <BrowserRouter basename="/">
       <AuthProvider>
+        <Logout />
         <div className="App">
           <Routes>
             <Route path="/" element={<RequireAuth2 />}>
               <Route index element={<Todo selected={selected} />} />
             </Route>
-              <Route path="login" element={<Login />} />
-            <Route path="reg" element={ <Register />} />
+            <Route path="login" element={<Login />} />
+            <Route path="reg" element={<Register />} />
           </Routes>
         </div>
       </AuthProvider>
