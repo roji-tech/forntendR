@@ -3,7 +3,8 @@ import customJwtDecode from "../../utils/custom_JWT_decode";
 import dayjs from "dayjs";
 import AuthFunc from "./AuthContext";
 
-const baseURL = "http://127.0.0.1:8000/";
+// const baseURL = "http://127.0.0.1:8000/";
+export const baseURL = "https://django-todolist-api.herokuapp.com/";
 
 const useAxios = () => {
   const { authTokens, logoutUser, setAuthTokens, setUser } = AuthFunc();
@@ -44,6 +45,7 @@ const useAxios = () => {
       setUser(customJwtDecode(response.data.access));
       return req;
     } else {
+      console.log("error");
       logoutUser();
     }
   });

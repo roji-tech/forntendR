@@ -12,12 +12,13 @@ const axiosInstance = axios.create({
 });
 
 axiosInstance.interceptors.request.use(async (req) => {
-  console.log("i=======================================");
   // req.headers.Authorization = `JWT ${req.data.access}`;
 
-  if(!authTokens){
-      authTokens = localStorage.getItem('authTokens') ? JSON.parse(localStorage.getItem('authTokens')) : null
-      req.headers.Authorization = `JWT ${authTokens?.access}`
+  if (!authTokens) {
+    authTokens = localStorage.getItem("authTokens")
+      ? JSON.parse(localStorage.getItem("authTokens"))
+      : null;
+    req.headers.Authorization = `JWT ${authTokens?.access}`;
   }
 
   // const user = jwt_decode(authTokens?.access)
@@ -25,12 +26,9 @@ axiosInstance.interceptors.request.use(async (req) => {
 
   // if(!isExpired) return req
   if (req.status !== 200) {
-    console.log("i======= string" + JSON.stringify(req));
-
     const response = await axios.post(`${baseURL}api/token/refresh/`, {
       refresh: authTokens.refresh,
     });
-    console.log();
     localStorage.setItem("authTokens", JSON.stringify(response.data));
     req.headers.Authorization = `JWT ${response.data.access}`;
     axios.defaults.headers.common[

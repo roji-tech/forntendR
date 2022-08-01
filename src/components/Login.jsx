@@ -121,6 +121,5 @@ export default SignIn;
 //   email: email,
 //   password: password
 // }).then(res => {
-//   console.log(res.data)
 // })
 // };

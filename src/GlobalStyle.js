@@ -3,17 +3,14 @@ import { createGlobalStyle } from "styled-components";
 const GlobalStyle = createGlobalStyle`
 
   :root {
-  --bg-white:	 aliceblue;
-  --bg-light:	 #99ff99;
-  --bg-image: url(./imgs/subtle-prism.svg);
-  --bg-dark: 	#001630;
-
-  --color-1: rgba(0, 239, 139, 0.456);
-  --color-2: rgba(0, 0, 0, 0.256);
+  --bg-white:	 #c7dbec;
+  --color:	 #fff;
+  --light: #569fdf;
+  --blue: #0066ff;
+  --brown: #352f2f;
 
   --fontMed: 1.3rem;
   --fontSmall: 1.1rem;
-  --fontSuperSmall: .8rem;
   }
 
   * {
@@ -23,19 +20,18 @@ const GlobalStyle = createGlobalStyle`
   box-sizing: border-box;
   }
 
-  html {
-    width: 100%;
+  :root {
+    width: 99.8%;
   }
 
   body {
-    border : 10px solid blue;
-    width: 100%;
+    /* border : 10px solid var(--blue); */
+    width: 99.8%;
     margin: 0 auto;
     padding: 2% 1% 10%;
     background-color: var(--bg-white);
-    color: var(--bg-light);
-    display: flex;
-    justify-content: center;
+    color: var(--color);
+
 
 
 
@@ -61,7 +57,10 @@ const GlobalStyle = createGlobalStyle`
     }
 
     .App {
-    text-align: center;
+      display: flex;
+      width: 100%;
+     justify-content: center;
+     text-align: center;
       }
 
   }

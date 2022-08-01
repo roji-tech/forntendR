@@ -1,7 +1,8 @@
 import axios from "axios";
+import { baseURL } from "./useAxios";
 
 const fetchData = async () => {
-  const response = await axios.get("http://127.0.0.1:8000/api/todos/");
+  const response = await axios.get(`${baseURL}api/todos/`);
   
 };
 

@@ -40,14 +40,12 @@ export default function SignUp() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     var formdata = new FormData();
-    console.log(username + email + password);
 
-    //  let username = data.get("username").trim();
-    //  let email = data.get("email").trim();
-    //  let password = data.get("password").trim();
+    let trim_username = username.trim();
+    let trim_email = email.trim();
 
-    formdata.append("username", username);
-    formdata.append("email", email);
+    formdata.append("username", trim_username);
+    formdata.append("email", trim_email);
     formdata.append("password", password);
 
     var requestOptions = {
@@ -60,12 +58,15 @@ export default function SignUp() {
       navigate("/login");
     };
 
-    await fetch("http://127.0.0.1:8000/auth/users/", requestOptions)
+    await fetch(
+      "https://django-todolist-api.herokuapp.com/auth/users/",
+      requestOptions
+    )
       .then((response) => {
         alert("success");
         setTimeout(nav, 2000);
       })
-      .catch((error) => console.log("error", error));
+      .catch((error) => console.log("error"));
   };
 
   return (

@@ -4,6 +4,7 @@ import { createContext, useState, useEffect, useContext } from "react";
 import customJwtDecode from "../../utils/custom_JWT_decode";
 import useAxios from "./useAxios";
 import { useNavigate } from "react-router-dom";
+import { baseURL } from "./useAxios";
 
 const INITIAL_STATE = {
   todos: [],
@@ -20,7 +21,6 @@ const AuthContext = createContext({});
 
 export const AuthProvider = ({ children }) => {
   const [todos, setTodos] = useState([]);
-  const axiosInstance = useAxios();
 
   const [authTokens, setAuthTokens] = useState(() =>
     localStorage.getItem("authTokens")
@@ -33,8 +33,6 @@ export const AuthProvider = ({ children }) => {
       ? customJwtDecode(JSON.parse(localStorage.getItem("authTokens")).access)
       : null
   );
-
-  // const [loading, setLoading] = useState(true);
 
   const navigate = useNavigate();
 
@@ -52,11 +50,7 @@ export const AuthProvider = ({ children }) => {
       redirect: "follow",
     };
 
-
-    const response = await fetch(
-      "http://127.0.0.1:8000/api/token/",
-      requestOptions
-    );
+    const response = await fetch(`${baseURL}api/token/`, requestOptions);
 
     if (response.status === 200) {
       const data = await response.json();
@@ -66,7 +60,7 @@ export const AuthProvider = ({ children }) => {
       setUser({ ...access });
       navigate("/", { replace: true });
     } else {
-      console.log(response);
+      console.log("error");
     }
   };
 
@@ -74,9 +68,6 @@ export const AuthProvider = ({ children }) => {
     setAuthTokens(null);
     setUser(null);
     localStorage.removeItem("authTokens");
-    console.log("loging out");
-    // localStorage.removeItem("access_token");
-    // localStorage.removeItem("refresh_token");
     navigate("/login");
   };
 

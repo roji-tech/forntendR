@@ -1,49 +1,99 @@
-import { useEffect, useCallback } from "react";
-import styled from "styled-components";
+import { useEffect, useState } from "react";
 import AuthFunc from "./addons/AuthContext";
 import useAxios from "./addons/useAxios";
+import { TodoListStyle } from "./TodoStyles";
+import { AiFillDelete, AiOutlineCheckCircle } from "react-icons/ai";
 
 const TodoList = ({ selected }) => {
   const { todos, setTodos } = AuthFunc();
   const axiosInstance = useAxios();
+  const [filter, setFilter] = useState([]);
 
   const [choice, setChoice] = selected;
 
   const fetchTodo = async () => {
     try {
       const response = await axiosInstance.get("api/todos/");
-
       const data = await response.data;
-      console.log(data);
       return setTodos(data);
     } catch (error) {
-      console.log({ error: error });
-      return "error";
+      console.log("error");
     }
   };
 
-  const handleDelete = (e) => {
-    console.log("deleted");
+  const handleDelete = async (id) => {
+    await axiosInstance.delete(`api/todos/${id}/`);
+    const newTodos = await todos.filter((todo) => todo.id !== id);
+    await setTodos(newTodos);
   };
 
-  const handleCompleted = (e) => {
-    console.log("Completed");
+  const toggleCompleted = async (id, completed) => {
+    let formdata = new FormData();
+    formdata.append("completed", !completed);
+    // formdata.append("title", "oooooooooo");
+    await axiosInstance.patch(`api/todos/${id}/`, formdata);
+    // const data = await response.data;
+    const newTodos = todos.map((todo) =>
+      todo.id === id ? { ...todo, completed: !completed } : todo
+    );
+    setTodos([...newTodos]);
+  };
+
+  const dropDownFilter = (e) => {
+    setChoice(e.target.value);
+  };
+
+  const filterTodos = () => {
+    let filtering = [];
+
+    selected[0] === "All" && (filtering = [...todos]);
+
+    selected[0] === "Completed" &&
+      (filtering = todos.filter((todo) => todo.completed === true));
+
+    selected[0] === "Incomplete" &&
+      (filtering = todos.filter((todo) => todo.completed === false));
+
+    setFilter([...filtering]);
+  };
+
+  const handleDeleteAll = async (e) => {
+    e.preventDefault();
+    await axiosInstance.delete(`api/del-all/`);
+    await setTodos([]);
+  };
+
+  const handleDeleteCompleted = async (e) => {
+    e.preventDefault();
+    await axiosInstance.delete(`api/del-completed/`);
+    const filtering = await todos.filter((todo) => todo.completed === false);
+    await setTodos([...filtering]);
   };
 
   useEffect(() => {
     fetchTodo();
   }, []);
 
-  const dropDownFilter = (e) => {
-    setChoice(e.target.value);
-  };
+  useEffect(() => {
+    filterTodos();
+  }, [todos, selected]);
 
   return (
     <TodoListStyle>
       <div className="topBar">
-        <div>
-          <button>Delete Completed</button>
-          <button>Delete All </button>
+        <div className="del_multiple">
+          <button
+            className="del_multiple_btn"
+            onClick={(e) => handleDeleteCompleted(e)}
+          >
+            Delete Completed
+          </button>
+          <button
+            className="del_multiple_btn"
+            onClick={(e) => handleDeleteAll(e)}
+          >
+            Delete All{" "}
+          </button>
         </div>
         <select
           value={choice}
@@ -58,180 +108,43 @@ const TodoList = ({ selected }) => {
       </div>
       <div className="todoCount">
         <p>YOUR TODOS</p>
-        <p className="p1"> 7 </p>
+        <p className="p1"> {todos.length} </p>
       </div>
       <ul>
-        {todos.map((item, index) => (
-          <li key={item.id}>
-            <div className="todo">
-              <div className="todo-title">
+        {filter.length === 0 ? (
+          <h1>No Todo</h1>
+        ) : (
+          filter.map((todo, index) => (
+            <li key={todo.id}>
+              <div className="todo">
                 <p className="p1">
-                  <b> {index + 1}: </b> coding
+                  <b className="index"> {index + 1} </b> {todo.title}
                 </p>
-                {/* <p>{item}</p> */}
+                <p className="timestamp">{todo.created}</p>
               </div>
-            </div>
 
-            <div className="iconDiv">
-              <div>icon</div>
-              <div>icon</div>
-            </div>
-          </li>
-        ))}
+              <div className="iconDiv">
+                <div className="icon">
+                  <AiOutlineCheckCircle
+                    onClick={() => toggleCompleted(todo.id, todo.completed)}
+                    size={18}
+                    color={`${todo.completed ? "green" : "red"}`}
+                  />
+                </div>
+                <div className="icon">
+                  <AiFillDelete
+                    onClick={() => handleDelete(todo.id)}
+                    size={18}
+                    color="red"
+                  />
+                </div>
+              </div>
+            </li>
+          ))
+        )}
       </ul>
     </TodoListStyle>
   );
 };
 
 export default TodoList;
-
-const TodoListStyle = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  background-color: transparent;
-  background-color: inherit;
-
-  .todoCount {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px;
-    background-color: #352f2f;
-    font-style: italic;
-    font-weight: 1000;
-
-    p {
-      font-size: var(--fontMed);
-    }
-
-    .p1 {
-      font-size: var(--fontMed);
-      background: var(--bg-dark);
-      padding: 10px;
-      border-radius: 30px;
-    }
-  }
-
-  .topBar {
-    width: 100%;
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
-
-    /* @media screen and (max-width: 500px) {
-      align-items: flex-start;
-      justify-content: end;
-      flex-direction: column-reverse;
-    } */
-
-    div {
-      display: flex;
-      align-items: flex-end;
-      gap: 0.5em;
-
-      @media screen and (max-width: 500px) {
-        align-items: flex-start;
-        flex-direction: column;
-        gap: 0;
-      }
-
-      button {
-        padding: 10px;
-      }
-    }
-
-    select {
-      align-self: center;
-      justify-self: flex-end;
-      /* appearance: none;
-      -webkit-appearance: none; */
-      margin-right: 10px;
-      outline: none;
-      padding: 5px;
-      font-weight: 1000;
-      font-size: 0.9em;
-      border-radius: 10px;
-      -webkit-padding-end: 20px;
-      -moz-padding-end: 20px;
-      -webkit-padding-start: 2px;
-      -moz-padding-start: 2px;
-
-      select::-ms-expand {
-        /* display: none; Hide the default arrow in Internet Explorer 10 and Internet Explorer 11 */
-      }
-    }
-  }
-
-  ul {
-    list-style: none;
-    margin-top: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5em;
-
-    li {
-      display: grid;
-      grid-template-columns: 10fr 2fr;
-      align-items: center;
-      box-sizing: border-box;
-      border-left: 10px solid transparent;
-      border-left-style: solid;
-      background-color: rgb(6, 59, 59);
-
-      .todo {
-        display: flex;
-        gap: 0.4em;
-        padding: 15px 0;
-        flex-direction: column;
-
-        .todo-title {
-          display: grid;
-          grid-template-columns: 1.5fr 1.5fr 0.5fr;
-
-          .p1 {
-            text-align: justify;
-            word-wrap: break-word;
-          }
-
-          @media screen and (max-width: 500px) {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            /* width: 100%;
-            justify-content: space-evenly;
-            padding: 15px; */
-            gap: 0.5em;
-          }
-        }
-
-        li.completed_todo {
-          border-top-left-radius: 30px;
-          border-left-color: #0000ff;
-          background-color: rgb(0, 255, 255);
-        }
-
-        .desc {
-          text-align: justify;
-          border-left: 1px solid blue;
-          padding-left: 10px;
-        }
-      }
-
-      .iconDiv {
-        display: flex;
-        gap: 0.4em;
-      }
-    }
-  }
-
-  //   @media screen and (max-width: 1024px) {
-  //     width: 70%;
-  //   }
-  //   @media screen and (max-width: 800px) {
-  //     width: 80%;
-  //   }
-  //   @media screen and (max-width: 500px) {
-  //     width: 98%;
-  //   }
-`;

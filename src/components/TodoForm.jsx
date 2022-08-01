@@ -1,115 +1,64 @@
-import React, { useState } from "react";
-import styled from "styled-components";
-
-const TodoFormStyle = styled.form`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  background-color: green;
-
-  h3 {
-    margin: 5px;
-  }
-
-  .form {
-    display: grid;
-    grid-template-columns: 12fr 2fr;
-    gap: 1em;
-    width: 100%;
-
-    @media screen and (max-width: 500px) {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-    }
-
-    .inputs {
-      display: flex;
-      flex-direction: column;
-      gap: 0.7em;
-      width: 100%;
-
-      input,
-      textarea {
-        padding: 10px;
-        width: 100%;
-        outline: none;
-        resize: none;
-      }
-      textarea {
-        width: 100%;
-      }
-    }
-
-    .buttons {
-      display: flex;
-      flex-direction: column;
-      justify-content: space-evenly;
-      padding-right: 10px;
-
-      @media screen and (max-width: 500px) {
-        flex-direction: row;
-        width: 100%;
-        justify-content: space-evenly;
-        padding: 15px;
-        gap: 0.5em;
-      }
-
-      button {
-        padding: 6px;
-        border-radius: 10px;
-
-        @media screen and (max-width: 500px) {
-          width: 50%;
-          padding: 8px;
-        }
-      }
-    }
-  }
-
-  //   @media screen and (max-width: 1024px) {
-  //     width: 70%;
-  //   }
-  //   @media screen and (max-width: 800px) {
-  //     width: 80%;
-  //   }
-  //   @media screen and (max-width: 500px) {
-  //     width: 98%;
-  //   }
-`;
+import React, { useRef } from "react";
+import { TodoFormStyle } from "./TodoStyles";
+import AuthFunc from "./addons/AuthContext";
+import useAxios from "./addons/useAxios";
+import axios from "axios";
 
 const TodoForm = () => {
-  const [task, setTask] = useState();
-  const [desc, setDesc] = useState("");
+  const axiosInstance = useAxios();
+  const { setTodos } = AuthFunc();
+  const ref = useRef("");
 
-  const handleSubmit = (e) => {
-    e.preventDefault(); // prevents browser refresh
-    console.log(task);
-    console.log(desc);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    let task1 = ref.current.value;
+    if (task1 === "") {
+      return;
+    }
+    try {
+      const response = await axiosInstance.post("api/todos/", {
+        title: task1,
+      });
+
+      const data = await response.data;
+      setTodos((prev) => [data, ...prev]);
+      ref.current.value = "";
+    } catch (error) {
+      console.log("error");
+    }
+    // let formdata = new FormData();
+    // formdata.append("title", "task");
+    // let requestOptions = {
+    //   method: "POST",
+    //   body: formdata,
+    //   redirect: "follow",
+    // };
+    // await fetch("http://127.0.0.1:8000/api/todos/", requestOptions)
+    //   .then((response) => response.text())
+    //   .then((result) => console.log(result))
+    //   .catch((error) => console.log("error", error));
+  };
+
+  const handleReset = () => {
+    ref.current.value = "";
   };
 
   return (
     <TodoFormStyle className="todo-form" onSubmit={handleSubmit}>
       <h3>Add New Todo</h3>
-      <div className="form">
+      <form className="form">
         <div className="inputs">
-          <input
-            type="text"
-            placeholder="Task"
-            onChange={(e) => setTask(e.target.value)}
-          />
-          <textarea
-            rows={3}
-            name="description"
-            placeholder="Task Description"
-            onChange={(e) => setDesc(e.target.value)}
-          ></textarea>
+          <input ref={ref} type="text" placeholder="Task" required={true} />
         </div>
         <div className="buttons">
-          <button type="reset">Clear</button>
-          <button type="submit">ADD</button>
+          <button type="reset" onClick={handleReset}>
+            Clear
+          </button>
+          <button type="submit" onClick={handleSubmit}>
+            ADD
+          </button>
         </div>
-      </div>
+      </form>
     </TodoFormStyle>
   );
 };

@@ -21,10 +21,6 @@ const useAxios = () => {
   });
 
   axiosInstance.interceptors.request.use(async (req) => {
-    console.log("i ran 1");
-    console.log("i ran 2");
-    console.log("i ran 3");
-    console.log("i ran 4");
 
     // const user = authTokens ? jwt_decode(authTokens.access) : null;
     // const isExpired = authTokens
@@ -119,7 +115,6 @@ export default useAxios;
 
 //         // exp date in token is expressed in seconds, while now() returns milliseconds:
 //         const now = Math.ceil(Date.now() / 1000);
-//         console.log(tokenParts.exp);
 
 //         if (tokenParts.exp > now) {
 //           return axiosFetch
@@ -141,11 +136,9 @@ export default useAxios;
 //               console.log(err);
 //             });
 //         } else {
-//           console.log("Refresh token is expired", tokenParts.exp, now);
 //           window.location.href = "/login/";
 //         }
 //       } else {
-//         console.log("Refresh token not available.");
 //         window.location.href = "/login/";
 //       }
 //     }
