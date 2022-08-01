@@ -32,9 +32,6 @@ const theme = createTheme();
 const SignIn = () => {
   const { loginUser } = AuthFunc();
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-
   return (
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">
@@ -64,7 +61,6 @@ const SignIn = () => {
               name="email"
               autoComplete="email"
               autoFocus
-              onChange={(e) => setEmail(e.currentTarget.value)}
             />
             <TextField
               margin="normal"
@@ -75,7 +71,6 @@ const SignIn = () => {
               type="password"
               id="password"
               autoComplete="current-password"
-              onChange={(e) => setPassword(e.currentTarget.value)}
             />
             <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
